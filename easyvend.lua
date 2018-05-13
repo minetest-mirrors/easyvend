@@ -896,7 +896,7 @@ easyvend.after_place_node = function(pos, placer)
 	end
 	meta:set_string("infotext", d)
 	meta:set_string("status", "Awaiting configuration by owner.")
-	meta:set_string("message", "Welcome! Please prepare the machine.")
+	meta:set_string("message", "Please select an item and amount, then confirm.")
 	meta:set_int("number", 1)
 	meta:set_int("cost", 1)
 	meta:set_int("stock", -1)
