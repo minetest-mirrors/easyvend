@@ -430,6 +430,12 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 		easyvend.sound_error(sender:get_player_name())
 		easyvend.set_formspec(pos, sender)
 		return
+	elseif ( not itemstack:is_known() ) then
+		meta:set_string("status", "Awaiting configuration by owner.")
+		meta:set_string("message", "Unknown item specified.")
+		easyvend.sound_error(sender:get_player_name())
+		easyvend.set_formspec(pos, sender)
+		return
 	elseif ( number == nil or number < 1 or number > maxnumber ) then
 		if maxnumber > 1 then
 			meta:set_string("message", string.format("Invalid item count; must be between 1 and %d!", maxnumber))
