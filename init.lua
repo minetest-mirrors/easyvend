@@ -88,7 +88,14 @@ vendor_on.drop = "easyvend:vendor"
 local vendor_off = table.copy(machine_template)
 vendor_off.description = vendor_on.description
 vendor_off._doc_items_longdesc = string.format("A vending machine allows its owner to offer a certain item in exchange for money (%s). The users can pay with money and will some items in return.", easyvend.currency_desc)
-vendor_off._doc_items_usagehelp = "For customers: The vending machine has to be ready to be used, which is the case if the green LED lights up. Point the vending machine to see its owner and what it has to offer and at which price (item count first). Rightclick it to open the buying menu. You can pay with the number of items shown at “Price” and you will get the item at “Offered item” in return. Click on “Buy” to buy this offer once, repeat this as often as you like.\nFor owners: First, place a locked chest and fill it with the item you want to sell, make sure you leave some inventory slots empty for the price. Place the vending machine above or below the locked chest. Any locked chest connected in a unbroken vertical line of locked chests, vending machines and depositing machines will be accessed as storage. Rightclick the machine. Set the offered item by moving an item from your invenory into the slot. The price item can not be changed. Now set the number of items per sale and their price and click on “Confirm” to confirm. Check the message and status for any errors. If the status is “Ready.”, the machine works properly. All other status messages are errors. The earnings of the vending machine can be retrieved from the locked chest."
+vendor_off._doc_items_usagehelp = [[For customers:
+First check if the vending machine is ready (upper green LED lights up), otherwise it is of no use. Point it to see its owner and offer. Rightclick to open the buying menu. You can pay with the number of items shown at “Price” and you will get the item at “Offered item” in return. Click on “Buy” to buy this offer once.
+
+For owners:
+First, place a locked chest and fill it with the item you want to sell, make sure you leave some inventory slots empty for the price. Place the vending machine above or below the locked chest. Any locked chest connected in a unbroken vertical line of locked chests, vending/depositing machines will be accessed as storage. Rightclick the machine. Set the offered item by moving an item from your invenory into the slot. The price item can not be changed. Now set the number of items per sale and their price and click on “Confirm” to confirm. If the upper green status LED lights up, you're done, if not, check the message.
+The earnings will go into the locked chest.
+Hint: If you enter an “s” after the item number to multiply it with the maximum stack size.]]
+
 vendor_off.tiles = table.copy(vendor_on.tiles)
 vendor_off.tiles[6] = "easyvend_vendor_front_off.png"
 
@@ -103,7 +110,13 @@ depositor_on.drop = "easyvend:depositor"
 local depositor_off = table.copy(machine_template)
 depositor_off.description = depositor_on.description
 depositor_off._doc_items_longdesc = string.format("A depositing machine allows its owner to offer money (%s) in exchange for a certain item. The users can supply the depositing machine with the requested item and will get money in return.", easyvend.currency_desc)
-depositor_off._doc_items_usagehelp = "For users: The depositing machine has to be ready to be used, which is the case if the green LED lights up. Point the depositing machine to see its owner and what item it asks for and at which payment (item count first). Rightclick it to open the selling menu. You can give the number of items shown at “Requested item” and you will get the items at “Payment” in return. Click on “Sell” to exchange items, repeat this as often as you like.\nFor owners: First, place a locked chest and supply it with the payment item, make sure you leave some inventory slots empty for the items you want to retrieve. Place the depositing machine above or below the locked chest. Any chest connected in a unbroken vertical stack of locked chests, vending machines and depositing machines will be accessed as storage. Rightclick the machine. Set the requested item by moving an item from your invenory into the slot. The payment item can not be changed. Now set the number of requested items and how much you pay for them and click on “Confirm” to confirm. Check the message and status for any errors. If the status is “Ready.”, the machine works properly, all other status messages are errors. The deposited items can be retrieved from the locked chest."
+depositor_off._doc_items_usagehelp = [[For users:
+To use a machine, check if its ready (the upper green LED lights up), otherwise, it cannot be used. Point the depositing machine to see its owner and the offer. Rightclick for the selling menu. You can give the number of items shown at “Requested item” and you will get the items at “Payment” in return. Click on “Sell” to exchange items, repeat this as often as you like.
+
+For owners:
+First, place a locked chest and supply it with the payment item, make sure you leave some inventory slots empty for the items you want to retrieve. Place the machine above or below the chest. Any chest connected in a unbroken vertical stack of locked chests, vending/depositing machines machines will be accessed.
+Rightclick the machine. Set the requested item by moving an item from your invenory into the slot. The payment item can not be changed. Now set the number of requested items and your payment and click on “Confirm” to confirm. (Hint: Append the letter “s” to the number to multiply by the stack size). If the upper green LED lights up, everything works fine, otherwise, check the message. The deposited items will end up in the chest.
+Hint: If you enter an “s” after the item number to multiply it with the maximum stack size.]]
 depositor_off.tiles = table.copy(depositor_on.tiles)
 depositor_off.tiles[6] = "easyvend_depositor_front_off.png"
 

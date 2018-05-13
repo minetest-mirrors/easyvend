@@ -396,8 +396,7 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 
 	--[[ Convenience function:
 	When appending “s” or “S” to the number, it is multiplied
-	by the maximum stack size.
-	TODO: Expose this in user documentation ]]
+	by the maximum stack size. ]]
 	local number_stack_max = itemstack:get_stack_max()
 	local ss = string.sub(number, #number, #number)
 	if ss == "s" or ss == "S" then
