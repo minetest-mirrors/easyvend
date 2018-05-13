@@ -27,6 +27,10 @@ But it can be changed via the setting `easyvend_currency`.
 
 
 ## Appendix
+### Developer information
+If you want to a container node compatible with vending/depositing machines,
+use the Easyvend API, see the file `API.md`.
+
 ### Converting machines from `vendor` mod (experimental)
 This mod is able to automatically transform the vending and depositing
 machines from Bad\_Command\_'s Vending machines [`vendor`] mod on loading
