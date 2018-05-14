@@ -13,10 +13,44 @@ local maxcost = cost_stack_max * slots_max
 
 local joketimer_start = 3
 
+local active_item_selection = {}
+
 -- Allow for other mods to register custom chests
 easyvend.register_chest = function(node_name, inv_list, meta_owner)
 	registered_chests[node_name] = { inv_list = inv_list, meta_owner = meta_owner }
 	traversable_node_types[node_name] = true
+end
+
+if minetest.get_modpath("select_item") then
+	-- When player selects item via "select item" dialog, switch the
+	-- machine's selected item and update the formspec.
+	select_item.register_on_select_item(function(playername, itemstring)
+		local player = minetest.get_player_by_name(playername)
+		if not player then
+			return
+		end
+		local pos = active_item_selection[playername]
+		if pos then
+			local node = minetest.get_node(pos)
+			if not easyvend.is_machine(node.name) then
+				return
+			end
+			local meta = minetest.get_meta(pos)
+			local owner = meta:get_string("owner")
+			if playername == owner then
+				local inv = meta:get_inventory()
+				local stack = ItemStack(itemstring)
+				if stack == nil then
+					inv:set_stack( "item", 1, nil )
+				else
+					inv:set_stack( "item", 1, stack)
+					meta:set_string("itemname", itemstring)
+					easyvend.set_formspec(pos, player)
+				end
+			end
+		end
+		active_item_selection[playername] = nil
+	end)
 end
 
 -- Partly a wrapper around contains_item, but does special treatment if the item
@@ -74,6 +108,10 @@ easyvend.buysell = function(nodename)
 		buysell = "sell"
 	end
 	return buysell
+end
+
+easyvend.is_machine = function(nodename)
+	return ( nodename == "easyvend:depositor_on" or nodename == "easyvend:vendor_on" or nodename == "easyvend:depositor" or nodename == "easyvend:vendor" )
 end
 
 easyvend.is_active = function(nodename)
@@ -153,6 +191,9 @@ easyvend.set_formspec = function(pos, player)
 		.."tooltip[cost;"..itemcounttooltip.."]"
 		.."button[6,2.8;2,0.5;save;Confirm]"
 		.."tooltip[save;Confirm configuration and activate machine (only for owner)]"
+		if minetest.get_modpath("select_item") then
+			formspec = formspec .. "button[0,2.8;2,0.5;select_item;Select item]"
+		end
 		local weartext, weartooltip
 		if buysell == "buy" then
 			weartext = "Buy worn tools"
@@ -948,13 +989,25 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 			end
 		end
 	elseif fields.config or fields.save or fields.usermode then
-		if sender:get_player_name() == owner then
+		if sendername == owner then
 			easyvend.on_receive_fields_config(pos, formname, fields, sender)
 		else
 			meta:set_string("message", "Only the owner may change the configuration.")
 			easyvend.sound_error(sendername)
 			easyvend.set_formspec(pos, sender)
 			return
+		end
+	elseif fields.select_item then
+		if minetest.get_modpath("select_item") then
+			if sendername == owner then
+				active_item_selection[sendername] = pos
+				select_item.show_dialog(sendername, select_item.filters.creative)
+			else
+				meta:set_string("message", "Only the owner may change the configuration.")
+				easyvend.sound_error(sendername)
+				easyvend.set_formspec(pos, sender)
+				return
+			end
 		end
 	elseif fields.wear ~= nil then
 		if sender:get_player_name() == owner then
@@ -1179,7 +1232,7 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 		else
 			return nil, internal
 		end
-	elseif (node.name ~= "easyvend:vendor" and node.name~="easyvend:depositor" and node.name~="easyvend:vendor_on" and node.name~="easyvend:depositor_on") then
+	elseif not easyvend.is_machine(node.name) then
 		return nil, internal
 	end
 
@@ -1194,7 +1247,7 @@ easyvend.allow_metadata_inventory_put = function(pos, listname, index, stack, pl
 		local name = player:get_player_name()
 		if name == owner then
 			local inv = meta:get_inventory()
-			if stack==nil then
+			if stack == nil then
 				inv:set_stack( "item", 1, nil )
 			else
 				inv:set_stack( "item", 1, stack:get_name() )
