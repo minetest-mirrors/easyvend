@@ -4,6 +4,14 @@ Version: 0.4.3
 Adds vending and depositing machines which allow to buy and sell items from
 other players.
 
+## Requirements
+Runs natively in Minetest Game.
+
+May also run in other games if they have the `default` mod and locked chest
+(`default:chest_locked`).
+
+Locked chests from other mods are not supported, but mods can choose
+to add support for Easyvend on their own (see developer information below).
 
 ## How to use
 Help is also included as help entry for Item Documentation [`doc_items`].
@@ -21,8 +29,6 @@ extended storage.
 ### Currency item
 The currency is fixed during a game; all machines use the same currency.
 But it can be changed via the setting `easyvend_currency`.
-
-
 
 
 

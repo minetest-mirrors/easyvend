@@ -1,8 +1,12 @@
 # Easyvend API
-Use this API if you want to make an comntainer compatible with vending and
+Use this API if you want to make an container compatible with vending and
 depositing machines.
 
-The API only has one function:
+## How it works
+
+* Add `easyvend` as optional dependency
+* Check for existance of `easyvend` mod in code
+* Call `easyvend.register_chest` for all containers you want to be compatible
 
 ## `easyvend.register_chest = function(node_name, inv_list, meta_owner)`
 Registers a node (called “chest”) for use with Easyvend. After calling this function,
@@ -20,6 +24,14 @@ Easyvend makes the following assumptions about the chest:
 * `meta_owner`: Identifier of the metadata variable storing the owner name
 
 ### Example
+
+Register the node `example:superchest` as container:
+
 ```
-easyvend.register_chest("example:superchest", "main", "owner")
+if minetest.get_modpath("easyvend") then
+    easyvend.register_chest("example:superchest", "main", "owner")
+end
 ```
+
+The `if` check is a common trick to check for the existance of the `easyvend`
+and allows you to make the dependency optional.
