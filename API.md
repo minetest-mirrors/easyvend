@@ -5,7 +5,7 @@ depositing machines.
 ## How it works
 
 * Add `easyvend` as optional dependency
-* Check for existance of `easyvend` mod in code
+* Check for existence of `easyvend` mod in code
 * Call `easyvend.register_chest` for all containers you want to be compatible
 
 ## `easyvend.register_chest = function(node_name, inv_list, meta_owner)`
@@ -33,5 +33,5 @@ if minetest.get_modpath("easyvend") then
 end
 ```
 
-The `if` check is a common trick to check for the existance of the `easyvend`
+The `if` check is a common trick to check for the existence of the `easyvend`
 and allows you to make the dependency optional.

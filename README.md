@@ -26,7 +26,7 @@ Vending machines TAKE currency (gold ingots by default) and GIVE items
 of the owner's choice.
 Depositing machines GIVE currency and TAKE items of the owner's choice.
 
-To operatre your own machine, place a locked chest above or below and fill
+To operate your own machine, place a locked chest above or below and fill
 it with items to exchange. If the green status LED (the upper one) lights
 up, the machine is operational. You can stack these locked chests for
 extended storage.
