@@ -229,9 +229,9 @@ easyvend.set_formspec = function(pos, player)
 				end
 			else
 				if buysell == "sell" then
-					weartext = "Warning: Might sell worn tools."
+					weartext = "Note: Might sell worn tools."
 				else
-					weartext = "Worn tools are bought, too."
+					weartext = "Accepts worn tools."
 				end
 			end
 			if weartext ~= nil then
