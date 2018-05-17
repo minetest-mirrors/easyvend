@@ -24,32 +24,34 @@ end
 if minetest.get_modpath("select_item") then
 	-- When player selects item via "select item" dialog, switch the
 	-- machine's selected item and update the formspec.
-	select_item.register_on_select_item(function(playername, itemstring)
-		local player = minetest.get_player_by_name(playername)
-		if not player then
-			return
-		end
-		local pos = active_item_selection[playername]
-		if pos then
-			local node = minetest.get_node(pos)
-			if not easyvend.is_machine(node.name) then
+	select_item.register_on_select_item(function(playername, dialogname, itemstring)
+		if dialogname == "easyvend:trade_item" then
+			local player = minetest.get_player_by_name(playername)
+			if not player then
 				return
 			end
-			local meta = minetest.get_meta(pos)
-			local owner = meta:get_string("owner")
-			if playername == owner then
-				local inv = meta:get_inventory()
-				local stack = ItemStack(itemstring)
-				if stack == nil then
-					inv:set_stack( "item", 1, nil )
-				else
-					inv:set_stack( "item", 1, stack)
-					meta:set_string("itemname", itemstring)
-					easyvend.set_formspec(pos, player)
+			local pos = active_item_selection[playername]
+			if pos then
+				local node = minetest.get_node(pos)
+				if not easyvend.is_machine(node.name) then
+					return
+				end
+				local meta = minetest.get_meta(pos)
+				local owner = meta:get_string("owner")
+				if playername == owner then
+					local inv = meta:get_inventory()
+					local stack = ItemStack(itemstring)
+						if stack == nil then
+						inv:set_stack( "item", 1, nil )
+					else
+						inv:set_stack( "item", 1, stack)
+						meta:set_string("itemname", itemstring)
+						easyvend.set_formspec(pos, player)
+					end
 				end
 			end
+			active_item_selection[playername] = nil
 		end
-		active_item_selection[playername] = nil
 	end)
 end
 
@@ -1001,7 +1003,7 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 		if minetest.get_modpath("select_item") then
 			if sendername == owner then
 				active_item_selection[sendername] = pos
-				select_item.show_dialog(sendername, select_item.filters.creative)
+				select_item.show_dialog(sendername, "easyvend:trade_item", select_item.filters.creative)
 			else
 				meta:set_string("message", "Only the owner may change the configuration.")
 				easyvend.sound_error(sendername)
