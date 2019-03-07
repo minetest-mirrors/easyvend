@@ -134,13 +134,14 @@ easyvend.set_formspec = function(pos, player)
 	local number = meta:get_int("number")
 	local cost = meta:get_int("cost")
 	local itemname = meta:get_string("itemname")
-		local bg = ""
+	local bg = ""
 	local configmode = meta:get_int("configmode") == 1
-		if minetest.get_modpath("default") then
-			bg = default.gui_bg .. default.gui_bg_img .. default.gui_slots
-		end
+	-- Support legacy background from default mod (MT<=0.4.17)
+	if minetest.get_modpath("default") and default.gui_bg then
+		bg = default.gui_bg .. default.gui_bg_img .. default.gui_slots
+	end
 
-		local numbertext, costtext, buysellbuttontext
+	local numbertext, costtext, buysellbuttontext
 	local itemcounttooltip = "Item count (append “s” to multiply with maximum stack size)"
 		local buysell = easyvend.buysell(node.name)
 		if buysell == "sell" then
