@@ -1,6 +1,9 @@
 -- TODO: Improve mod compability
 local slots_max = 31
 
+local S = minetest.get_translator("easyvend")
+local F = minetest.formspec_escape
+
 local traversable_node_types = {
 	["easyvend:vendor"] = true,
 	["easyvend:depositor"] = true,
@@ -142,23 +145,23 @@ easyvend.set_formspec = function(pos, player)
 	end
 
 	local numbertext, costtext, buysellbuttontext
-	local itemcounttooltip = "Item count (append “s” to multiply with maximum stack size)"
+	local itemcounttooltip = S("Item count (append “s” to multiply with maximum stack size)")
 		local buysell = easyvend.buysell(node.name)
 		if buysell == "sell" then
-		numbertext = "Offered item"
-		costtext = "Price"
-		buysellbuttontext = "Buy"
+		numbertext = S("Offered item")
+		costtext = S("Price")
+		buysellbuttontext = S("Buy")
 		elseif buysell == "buy" then
-		numbertext = "Requested item"
-		costtext = "Payment"
-		buysellbuttontext = "Sell"
+		numbertext = S("Requested item")
+		costtext = S("Payment")
+		buysellbuttontext = S("Sell")
 		else
 		return
 	end
 	local status = meta:get_string("status")
-	if status == "" then status = "Unknown." end
+	if status == "" then status = S("Unknown.") end
 	local message = meta:get_string("message")
-	if message == "" then message = "No message." end
+	if message == "" then message = S("No message.") end
 	local status_image
 	if node.name == "easyvend:vendor_on" or node.name == "easyvend:depositor_on" then
 		status_image = "easyvend_status_on.png"
@@ -170,14 +173,14 @@ easyvend.set_formspec = function(pos, player)
 
 	local formspec = "size[8,7.3;]"
 		.. bg
-	.."label[3,-0.2;" .. minetest.formspec_escape(description) .. "]"
+	.."label[3,-0.2;" .. F(description) .. "]"
 
 	.."image[7.5,0.2;0.5,1;" .. status_image .. "]"
-	.."textarea[2.8,0.2;5.1,2;;Status: " .. minetest.formspec_escape(status) .. ";]"
-	.."textarea[2.8,1.3;5.6,2;;Message: " .. minetest.formspec_escape(message) .. ";]"
+	.."textarea[2.8,0.2;5.1,2;;"..F(S("Status: @1", status)) .. ";]"
+	.."textarea[2.8,1.3;5.6,2;;"..F(S("Message: @1", message)) .. ";]"
 
-		.."label[0,-0.15;"..numbertext.."]"
-		.."label[0,1.2;"..costtext.."]"
+		.."label[0,-0.15;"..F(numbertext).."]"
+		.."label[0,1.2;"..F(costtext).."]"
 		.."list[current_player;main;0,3.5;8,4;]"
 
 	if configmode then
@@ -189,25 +192,25 @@ easyvend.set_formspec = function(pos, player)
 				.."listring[current_player;main]"
 				.."listring[current_name;item]"
 		.."field[1.3,0.65;1.5,1;number;;" .. number .. "]"
-		.."tooltip[number;"..itemcounttooltip.."]"
-		.."field[1.3,1.95;1.5,1;cost;;" .. cost .. "]"
-		.."tooltip[cost;"..itemcounttooltip.."]"
-		.."button[6,2.8;2,0.5;save;Confirm]"
-		.."tooltip[save;Confirm configuration and activate machine (only for owner)]"
+		.."tooltip[number;"..F(itemcounttooltip).."]"
+		.."field[1.3,1.95;1.5,1;cost;;" .. F(cost) .. "]"
+		.."tooltip[cost;"..F(itemcounttooltip).."]"
+		.."button[6,2.8;2,0.5;save;"..F(S("Confirm")).."]"
+		.."tooltip[save;"..F(S("Confirm configuration and activate machine (only for owner)")).."]"
 		if minetest.get_modpath("select_item") then
-			formspec = formspec .. "button[0,2.8;2,0.5;select_item;Select item]"
+			formspec = formspec .. "button[0,2.8;2,0.5;select_item;"..F(S("Select item")).."]"
 		end
 		local weartext, weartooltip
 		if buysell == "buy" then
-			weartext = "Buy worn tools"
-			weartooltip = "If disabled, only tools in perfect condition will be bought from sellers (only settable by owner)"
+			weartext = S("Buy worn tools")
+			weartooltip = S("If disabled, only tools in perfect condition will be bought from sellers (only settable by owner)")
 		else
-			weartext = "Sell worn tools"
-			weartooltip = "If disabled, only tools in perfect condition will be sold (only settable by owner)"
+			weartext = S("Sell worn tools")
+			weartooltip = S("If disabled, only tools in perfect condition will be sold (only settable by owner)")
 		end
 		if minetest.registered_tools[itemname] ~= nil then
-			formspec = formspec .."checkbox[2,2.4;wear;"..minetest.formspec_escape(weartext)..";"..wear.."]"
-			.."tooltip[wear;"..minetest.formspec_escape(weartooltip).."]"
+			formspec = formspec .."checkbox[2,2.4;wear;"..F(weartext)..";"..wear.."]"
+			.."tooltip[wear;"..F(weartooltip).."]"
 		end
 	else
 		formspec = formspec
@@ -215,30 +218,30 @@ easyvend.set_formspec = function(pos, player)
 				.."item_image_button[0,0.35;1,1;"..itemname..";item_image;]"
 		.."label[1,1.85;×" .. cost .. "]"
 		.."label[1,0.55;×" .. number .. "]"
-		.."button[6,2.8;2,0.5;config;Configure]"
+		.."button[6,2.8;2,0.5;config;"..F(S("Configure")).."]"
 		if buysell == "sell" then
-			formspec = formspec .. "tooltip[config;Configure offered items and price (only for owner)]"
+			formspec = formspec .. "tooltip[config;"..F(S("Configure offered items and price (only for owner)")).."]"
 		else
-			formspec = formspec .. "tooltip[config;Configure requested items and payment (only for owner)]"
+			formspec = formspec .. "tooltip[config;"..F(S("Configure requested items and payment (only for owner)")).."]"
 		end
-		formspec = formspec .."button[0,2.8;2,0.5;buysell;"..buysellbuttontext.."]"
+		formspec = formspec .."button[0,2.8;2,0.5;buysell;"..F(buysellbuttontext).."]"
 		if minetest.registered_tools[itemname] ~= nil then
 			local weartext
 			if meta:get_int("wear") == 0 then
 				if buysell == "buy" then
-					weartext = "Only intact tools are bought."
+					weartext = S("Only intact tools are bought.")
 				else
-					weartext = "Only intact tools are sold."
+					weartext = S("Only intact tools are sold.")
 				end
 			else
 				if buysell == "sell" then
-					weartext = "Note: Might sell worn tools."
+					weartext = S("Note: Might sell worn tools.")
 				else
-					weartext = "Accepts worn tools."
+					weartext = S("Accepts worn tools.")
 				end
 			end
 			if weartext ~= nil then
-				formspec = formspec .."textarea[2.3,2.6;3,1;;"..minetest.formspec_escape(weartext)..";]"
+				formspec = formspec .."textarea[2.3,2.6;3,1;;"..F(weartext)..";]"
 			end
 		end
 	end
@@ -330,37 +333,37 @@ easyvend.machine_check = function(pos, node)
 			if not(number >= 1 and number <= maxnumber and cost >= 1 and cost <= maxcost) then
 				active = false
 				if buysell == "sell" then
-					status = "Invalid item count or price."
+					status = S("Invalid item count or price.")
 				else
-					status = "Invalid item count or payment."
+					status = S("Invalid item count or payment.")
 				end
 			end
 		else
 			active = false
-			status = "Awaiting configuration by owner."
+			status = S("Awaiting configuration by owner.")
 		end
 	else
 		active = false
 		meta:set_int("stock", 0)
 		if chest_error_remove == "no_chest" and chest_error_add == "no_chest" then
-			status = "No storage; machine needs to be connected with a locked chest."
+			status = S("No storage; machine needs to be connected with a locked chest.")
 		elseif chest_error_remove == "not_owned" or chest_error_add == "not_owned" then
-			status = "Storage can’t be accessed because it is owned by a different person!"
+			status = S("Storage can’t be accessed because it is owned by a different person!")
 		elseif chest_error_remove == "no_stock" then
 			if buysell == "sell" then
-				status = "The vending machine has insufficient materials!"
+				status = S("The vending machine has insufficient materials!")
 			else
-				status = "The depositing machine is out of money!"
+				status = S("The depositing machine is out of money!")
 			end
 		elseif chest_error_add == "no_space" then
-			status = "No room in the machine’s storage!"
+			status = S("No room in the machine’s storage!")
 		else
-			status = "Unknown error!"
+			status = S("Unknown error!")
 		end
 	end
 	if meta:get_int("configmode") == 1 then
 		active = false
-		status = "Awaiting configuration by owner."
+		status = S("Awaiting configuration by owner.")
 	end
 
 	if itemname == easyvend.currency and number == cost and active then
@@ -370,9 +373,9 @@ easyvend.machine_check = function(pos, node)
 		end
 		if jt == 0 then
 			if buysell == "sell" then
-				meta:set_string("message", "Item bought.")
+				meta:set_string("message", S("Item bought."))
 			else
-				meta:set_string("message", "Item sold.")
+				meta:set_string("message", S("Item sold."))
 			end
 			jt = -1
 		end
@@ -417,9 +420,9 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 		meta:set_int("configmode", 1)
 		local was_active = easyvend.is_active(node.name)
 		if was_active then
-			meta:set_string("message", "Configuration mode activated; machine disabled.")
+			meta:set_string("message", S("Configuration mode activated; machine disabled."))
 		else
-			meta:set_string("message", "Configuration mode activated.")
+			meta:set_string("message", S("Configuration mode activated."))
 		end
 		easyvend.machine_check(pos, node)
 		return
@@ -462,22 +465,22 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 	local maxnumber = number_stack_max * slots_max
 	
 	if ( itemstack == nil or itemstack:is_empty() ) then
-		meta:set_string("status", "Awaiting configuration by owner.")
-		meta:set_string("message", "No item specified.")
+		meta:set_string("status", S("Awaiting configuration by owner."))
+		meta:set_string("message", S("No item specified."))
 		easyvend.sound_error(sender:get_player_name())
 		easyvend.set_formspec(pos, sender)
 		return
 	elseif ( not itemstack:is_known() ) then
-		meta:set_string("status", "Awaiting configuration by owner.")
-		meta:set_string("message", "Unknown item specified.")
+		meta:set_string("status", S("Awaiting configuration by owner."))
+		meta:set_string("message", S("Unknown item specified."))
 		easyvend.sound_error(sender:get_player_name())
 		easyvend.set_formspec(pos, sender)
 		return
 	elseif ( number == nil or number < 1 or number > maxnumber ) then
 		if maxnumber > 1 then
-			meta:set_string("message", string.format("Invalid item count; must be between 1 and %d!", maxnumber))
+			meta:set_string("message", S("Invalid item count; must be between 1 and @1!", maxnumber))
 		else
-			meta:set_string("message", "Invalid item count; must be exactly 1!")
+			meta:set_string("message", S("Invalid item count; must be exactly 1!"))
 		end
 		meta:set_int("number", oldnumber)
 		easyvend.sound_error(sender:get_player_name())
@@ -485,9 +488,9 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 		return
 	elseif ( cost == nil or cost < 1 or cost > maxcost ) then
 		if maxcost > 1 then
-			meta:set_string("message", string.format("Invalid cost; must be between 1 and %d!", maxcost))
+			meta:set_string("message", S("Invalid cost; must be between 1 and @1!", maxcost))
 		else
-			meta:set_string("message", "Invalid cost; must be exactly 1!")
+			meta:set_string("message", S("Invalid cost; must be exactly 1!"))
 		end
 		meta:set_int("cost", oldcost)
 		easyvend.sound_error(sender:get_player_name())
@@ -501,11 +504,11 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 	meta:set_int("configmode", 0)
 
 	if itemname == easyvend.currency and number == cost and cost <= cost_stack_max then
-		meta:set_string("message", "Configuration successful. I am feeling funny.")
+		meta:set_string("message", S("Configuration successful. I am feeling funny."))
 		meta:set_int("joketimer", joketimer_start)
 		meta:set_int("joke_id", easyvend.assign_joke(buysell))
 	else
-		meta:set_string("message", "Configuration successful.")
+		meta:set_string("message", S("Configuration successful."))
 	end
 
 	local change = easyvend.machine_check(pos, node)
@@ -523,9 +526,9 @@ easyvend.make_infotext = function(nodename, owner, cost, number, itemstring)
 	local d = ""
 	if itemstring == nil or itemstring == "" or number == 0 or cost == 0 then
 		if easyvend.buysell(nodename) == "sell" then
-			d = string.format("Inactive vending machine (owned by %s)", owner)
+			d = S("Inactive vending machine (owned by @1)", owner)
 		else
-			d = string.format("Inactive depositing machine (owned by %s)", owner)
+			d = S("Inactive depositing machine (owned by @1)", owner)
 		end
 		return d
 	end
@@ -533,46 +536,46 @@ easyvend.make_infotext = function(nodename, owner, cost, number, itemstring)
 	if minetest.registered_items[itemstring] then
 		iname = minetest.registered_items[itemstring].description
 	else
-		iname = string.format("Unknown Item (%s)", itemstring)
+		iname = S("Unknown Item (@1)", itemstring)
 	end
 	if iname == nil then iname = itemstring end
 	local printitem, printcost
 	if number == 1 then
 		printitem = iname
 	else
-		printitem = string.format("%d×%s", number, iname)
+		printitem = S("@1×@2", number, iname)
 	end
 	if cost == 1 then
 		printcost = easyvend.currency_desc
 	else
-		printcost = string.format("%d×%s", cost, easyvend.currency_desc)
+		printcost = S("@1×@2", cost, easyvend.currency_desc)
 	end
 	if nodename == "easyvend:vendor_on" then
-		d = string.format("Vending machine (owned by %s)\nSelling: %s\nPrice: %s", owner, printitem, printcost)
+		d = S("Vending machine (owned by @1)", owner).."\n"..S("Selling: @1", printitem).."\n"..S("Price: @1", printcost)
 	elseif nodename == "easyvend:vendor" then
-		d = string.format("Inactive vending machine (owned by %s)\nSelling: %s\nPrice: %s", owner, printitem, printcost)
+		d = S("Inactive vending machine (owned by @1)", owner).."\n"..S("Selling: @1", printitem).."\n"..S("Price: @1", printcost)
 	elseif nodename == "easyvend:depositor_on" then
-		d = string.format("Depositing machine (owned by %s)\nBuying: %s\nPayment: %s", owner, printitem, printcost)
+		d = S("Depositing machine (owned by @1)", owner).."\n"..S("Buying: @1", printitem).."\n"..S("Payment: @1", printcost)
 	elseif nodename == "easyvend:depositor" then
-		d = string.format("Inactive depositing machine (owned by %s)\nBuying: %s\nPayment: %s", owner, printitem, printcost)
+		d = S("Inactive depositing machine (owned by @1)", owner).."\n"..S("Buying: @1", printitem).."\n"..S("Payment: @1", printcost)
 	end
 	return d
 end
 
 if minetest.get_modpath("awards") then
 	awards.register_achievement("easyvend_seller",{
-		title = "First Sale",
-		description = "Sell something with a vending machine.",
+		title = S("First Sale"),
+		description = S("Sell something with a vending machine."),
 		icon = "easyvend_vendor_front_on.png^awards_level1.png",
 	})
 	local desc_powerseller
 	if easyvend.currency == "default:gold_ingot" then
-		desc_powerseller = string.format("Earn %d gold ingots by selling goods with a single vending machine.", easyvend.powerseller)
+		desc_powerseller = S("Earn @1 gold ingots by selling goods with a single vending machine.", easyvend.powerseller)
 	else
-		desc_powerseller = string.format("Earn %d currency items by selling goods with a single vending machine.", easyvend.powerseller)
+		desc_powerseller = S("Earn @1 currency items by selling goods with a single vending machine.", easyvend.powerseller)
 	end
 	awards.register_achievement("easyvend_powerseller",{
-		title = "Power Seller",
+		title = S("Power Seller"),
 		description = desc_powerseller,
 		icon = "easyvend_vendor_front_on.png^awards_level2.png",
 	})
@@ -623,7 +626,7 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 	if ( number == nil or number < 1 or number > maxnumber ) or
 	( cost == nil or cost < 1 or cost > maxcost ) or
 	( itemname == nil or itemname=="") then
-		meta:set_string("status", "Invalid item count or price!")
+		meta:set_string("status", S("Invalid item count or price!"))
 		easyvend.machine_disable(pos, node, sendername)
 		return
 	end
@@ -674,7 +677,7 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 						meta:set_string("message", easyvend.get_joke(buysell, meta:get_int("joke_id")))
 						meta:set_int("joketimer", joketimer_start)
 					else
-						meta:set_string("message", "Item bought.")
+						meta:set_string("message", S("Item bought."))
 					end
 					easyvend.check_earnings(sendername, meta)
 					easyvend.sound_vend(pos)
@@ -691,13 +694,13 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 					if costremainder > 0 then costfree = costfree + 1 end
 					if not player_free and easyvend.free_slots(player_inv, "main") < numberfree then
 						if numberfree > 1 then
-							msg = string.format("No room in your inventory (%d empty slots required)!", numberfree)
+							msg = S("No room in your inventory (@1 empty slots required)!", numberfree)
 						else
-							msg = "No room in your inventory!"
+							msg = S("No room in your inventory!")
 						end
 						meta:set_string("message", msg)
 					elseif not chest_free and easyvend.free_slots(achest_inv, achestdef.inv_list) < costfree then
-						meta:set_string("status", "No room in the machine’s storage!")
+						meta:set_string("status", S("No room in the machine’s storage!"))
 						easyvend.machine_disable(pos, node, sendername)
 					else
 						-- Remember items for transfer
@@ -742,7 +745,7 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 								player_inv:add_item("main", cheststacks[i])
 							end
 						end
-						meta:set_string("message", "Item bought.")
+						meta:set_string("message", S("Item bought."))
 						easyvend.check_earnings(sendername, meta)
 						easyvend.sound_vend(pos)
 						easyvend.machine_check(pos, node)
@@ -750,21 +753,21 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 				end
 			elseif chest_has and player_has then
 				if not player_free then
-					msg = "No room in your inventory!"
+					msg = S("No room in your inventory!")
 					meta:set_string("message", msg)
 					easyvend.sound_error(sendername)
 				elseif not chest_free then
-					msg = "No room in the machine’s storage!"
+					msg = S("No room in the machine’s storage!")
 					meta:set_string("status", msg)
 					easyvend.machine_disable(pos, node, sendername)
 				end
 			else
 				if not chest_has then
-					msg = "The vending machine has insufficient materials!"
+					msg = S("The vending machine has insufficient materials!")
 					meta:set_string("status", msg)
 					easyvend.machine_disable(pos, node, sendername)
 				elseif not player_has then
-					msg = "You can’t afford this item!"
+					msg = S("You can’t afford this item!")
 					meta:set_string("message", msg)
 					easyvend.sound_error(sendername)
 				end
@@ -786,12 +789,12 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 					end
 					rchest_inv:remove_item(rchestdef.inv_list, price)
 					player_inv:add_item("main", price)
-					meta:set_string("status", "Ready.")
+					meta:set_string("status", S("Ready."))
 					if itemname == easyvend.currency and number == cost and cost <= cost_stack_max then
 						meta:set_string("message", easyvend.get_joke(buysell, meta:get_int("joke_id")))
 						meta:set_int("joketimer", joketimer_start)
 					else
-						meta:set_string("message", "Item sold.")
+						meta:set_string("message", S("Item sold."))
 					end
 					easyvend.sound_deposit(pos)
 					easyvend.machine_check(pos, node)
@@ -807,14 +810,14 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 					if costremainder > 0 then costfree = costfree + 1 end
 					if not player_free and easyvend.free_slots(player_inv, "main") < costfree then
 						if costfree > 1 then
-							msg = string.format("No room in your inventory (%d empty slots required)!", costfree)
+							msg = S("No room in your inventory (@1 empty slots required)!", costfree)
 						else
-							msg = "No room in your inventory!"
+							msg = S("No room in your inventory!")
 						end
 						meta:set_string("message", msg)
 						easyvend.sound_error(sendername)
 					elseif not chest_free and easyvend.free_slots(achest_inv, achestdef.inv_list) < numberfree then
-						meta:set_string("status", "No room in the machine’s storage!")
+						meta:set_string("status", S("No room in the machine’s storage!"))
 						easyvend.machine_disable(pos, node, sendername)
 					else
 						easyvend.machine_enable(pos, node)
@@ -859,28 +862,28 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 								achest_inv:add_item(achestdef.inv_list, playerstacks[i])
 							end
 						end
-						meta:set_string("message", "Item sold.")
+						meta:set_string("message", S("Item sold."))
 						easyvend.sound_deposit(pos)
 						easyvend.machine_check(pos, node)
 					end
 				end
 			elseif chest_has and player_has then
 				if not player_free then
-					msg = "No room in your inventory!"
+					msg = S("No room in your inventory!")
 					meta:set_string("message", msg)
 					easyvend.sound_error(sendername)
 				elseif not chest_free then
-					msg = "No room in the machine’s storage!"
+					msg = S("No room in the machine’s storage!")
 					meta:set_string("status", msg)
 					easyvend.machine_disable(pos, node, sendername)
 				end
 			else
 				if not player_has then
-					msg = "You have insufficient materials!"
+					msg = S("You have insufficient materials!")
 					meta:set_string("message", msg)
 					easyvend.sound_error(sendername)
 				elseif not chest_has then
-					msg = "The depositing machine is out of money!"
+					msg = S("The depositing machine is out of money!")
 					meta:set_string("status", msg)
 					easyvend.machine_disable(pos, node, sendername)
 				end
@@ -890,19 +893,19 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 		local status
 		meta:set_int("stock", 0)
 		if chest_error_remove == "no_chest" and chest_error_add == "no_chest" then
-			status = "No storage; machine needs to be connected with a locked chest."
+			status = S("No storage; machine needs to be connected with a locked chest.")
 		elseif chest_error_remove  == "not_owned" or chest_error_add == "not_owned" then
-			status = "Storage can’t be accessed because it is owned by a different person!"
+			status = S("Storage can’t be accessed because it is owned by a different person!")
 		elseif chest_error_remove  == "no_stock" then
 			if buysell == "sell" then
-				status = "The vending machine has insufficient materials!"
+				status = S("The vending machine has insufficient materials!")
 			else
-				status = "The depositing machine is out of money!"
+				status = S("The depositing machine is out of money!")
 			end
 		elseif chest_error_add  == "no_space" then
-			status = "No room in the machine’s storage!"
+			status = S("No room in the machine’s storage!")
 		else
-			status = "Unknown error!"
+			status = S("Unknown error!")
 		end
 		meta:set_string("status", status)
 		easyvend.sound_error(sendername)
@@ -924,17 +927,17 @@ easyvend.after_place_node = function(pos, placer)
 
 	local d = ""
 	if node.name == "easyvend:vendor" then
-		d = string.format("Inactive vending machine (owned by %s)", player_name)
+		d = S("Inactive vending machine (owned by @1)", player_name)
 		meta:set_int("wear", 1)
 		-- Total number of currency items earned for the machine's life time (excluding currency-currency trading)
 		meta:set_int("earnings", 0)
 	elseif node.name == "easyvend:depositor" then
-		d = string.format("Inactive depositing machine (owned by %s)", player_name)
+		d = S("Inactive depositing machine (owned by @1)", player_name)
 		meta:set_int("wear", 0)
 	end
 	meta:set_string("infotext", d)
-	meta:set_string("status", "Awaiting configuration by owner.")
-	meta:set_string("message", "Please select an item and amount, then confirm.")
+	meta:set_string("status", S("Awaiting configuration by owner."))
+	meta:set_string("message", S("Please select an item and amount, then confirm."))
 	meta:set_int("number", 1)
 	meta:set_int("cost", 1)
 	meta:set_int("stock", -1)
@@ -995,7 +998,7 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 		if sendername == owner then
 			easyvend.on_receive_fields_config(pos, formname, fields, sender)
 		else
-			meta:set_string("message", "Only the owner may change the configuration.")
+			meta:set_string("message", S("Only the owner may change the configuration."))
 			easyvend.sound_error(sendername)
 			easyvend.set_formspec(pos, sender)
 			return
@@ -1006,7 +1009,7 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 				active_item_selection[sendername] = pos
 				select_item.show_dialog(sendername, "easyvend:trade_item", select_item.filters.creative)
 			else
-				meta:set_string("message", "Only the owner may change the configuration.")
+				meta:set_string("message", S("Only the owner may change the configuration."))
 				easyvend.sound_error(sendername)
 				easyvend.set_formspec(pos, sender)
 				return
@@ -1016,23 +1019,23 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 		if sender:get_player_name() == owner then
 			if fields.wear == "true" then
 				if easyvend.buysell(node.name) == "buy" then
-					meta:set_string("message", "Used tools are now accepted.")
+					meta:set_string("message", S("Used tools are now accepted."))
 				else
-					meta:set_string("message", "Used tools are now for sale.")
+					meta:set_string("message", S("Used tools are now for sale."))
 				end
 				meta:set_int("wear", 1)
 			elseif fields.wear == "false" then
 				if easyvend.buysell(node.name) == "buy" then
-					meta:set_string("message", "Used tools are now rejected.")
+					meta:set_string("message", S("Used tools are now rejected."))
 				else
-					meta:set_string("message", "Used tools won’t be sold anymore.")
+					meta:set_string("message", S("Used tools won’t be sold anymore."))
 				end
 				meta:set_int("wear", 0)
 			end
 			easyvend.set_formspec(pos, sender)
 			return
 		else
-			meta:set_string("message", "Only the owner may change the configuration.")
+			meta:set_string("message", S("Only the owner may change the configuration."))
 			easyvend.sound_error(sendername)
 			easyvend.set_formspec(pos, sender)
 			return
@@ -1046,21 +1049,21 @@ end
 
 -- Vendor
 local jokes_vendor = {
-	"Thank you. You have made a vending machine very happy.",
-	"Humans have a strange sense of humor.",
-	"Let’s get this over with …",
-	"Item “bought”.",
-	"Tit for tat.",
-	"Do you realize what you’ve just bought?",
+	S("Thank you. You have made a vending machine very happy."),
+	S("Humans have a strange sense of humor."),
+	S("Let’s get this over with …"),
+	S("Item “bought”."),
+	S("Tit for tat."),
+	S("Do you realize what you’ve just bought?"),
 }
 -- Depositor
 local jokes_depositor = {
-	"Thank you, the money started to smell inside.",
-	"Money doesn’t grow on trees, you know?",
-	"Sanity sold.",
-	"Well, that was an awkward exchange.",
-	"Are you having fun?",
-	"Is this really trading?",
+	S("Thank you, the money started to smell inside."),
+	S("Money doesn’t grow on trees, you know?"),
+	S("Sanity sold."),
+	S("Well, that was an awkward exchange."),
+	S("Are you having fun?"),
+	S("Is this really trading?"),
 }
 
 easyvend.assign_joke = function(buysell)
@@ -1078,7 +1081,7 @@ easyvend.get_joke = function(buysell, id)
 	local joke
 	if buysell == nil or id == nil then
 		-- Fallback message (should never happen)
-		return "Items exchanged."
+		return S("Items exchanged.")
 	end
 	if buysell == "sell" then
 		joke = jokes_vendor[id]
@@ -1347,14 +1350,14 @@ if minetest.setting_getbool("easyvend_convert_vendor") == true then
 
 			local owner = meta:get_string("owner")
 			if easyvend.buysell(newnodename) == "sell" then
-				meta:set_string("infotext", string.format("Vending machine (owned by %s)", owner))
+				meta:set_string("infotext", S("Vending machine (owned by @1)", owner))
 			else
-				meta:set_string("infotext", string.format("Depositing machine (owned by %s)", owner))
+				meta:set_string("infotext", S("Depositing machine (owned by @1)", owner))
 			end
 
 
-			meta:set_string("status", "Initializing …")
-			meta:set_string("message", "Upgrade successful.")
+			meta:set_string("status", S("Initializing …"))
+			meta:set_string("message", S("Upgrade successful."))
 			easyvend.machine_check(pos, node)
 		end,
 	})
