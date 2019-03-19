@@ -282,7 +282,7 @@ end
 
 easyvend.machine_check = function(pos, node)
 	local active = true
-	local status = "Ready."
+	local status = S("Ready.")
 
 	local meta = minetest.get_meta(pos)
 
