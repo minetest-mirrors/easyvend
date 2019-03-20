@@ -1287,7 +1287,7 @@ minetest.register_abm({
 -- Transform the world and items to use the easyvend nodes/items
 
 -- For safety reasons, only do this when player requested so
-if minetest.setting_getbool("easyvend_convert_vendor") == true then
+if minetest.settings:get_bool("easyvend_convert_vendor") == true then
 	-- Replace vendor nodes
 	minetest.register_lbm({
 		name = "easyvend:replace_vendor",
