@@ -1,5 +1,5 @@
 # Easy Vending Machines [`easyvend`]
-Version: 0.4.3
+Version: 1.0.0
 
 Adds vending and depositing machines which allow to buy and sell items from
 other players, using a currency item.

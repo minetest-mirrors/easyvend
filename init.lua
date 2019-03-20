@@ -21,9 +21,9 @@ local S = minetest.get_translator("easyvend")
 
 easyvend = {}
 easyvend.VERSION = {}
-easyvend.VERSION.MAJOR = 0
-easyvend.VERSION.MINOR = 4
-easyvend.VERSION.PATCH = 3
+easyvend.VERSION.MAJOR = 1
+easyvend.VERSION.MINOR = 0
+easyvend.VERSION.PATCH = 0
 easyvend.VERSION.STRING = easyvend.VERSION.MAJOR .. "." .. easyvend.VERSION.MINOR .. "." .. easyvend.VERSION.PATCH
 
 -- Set item which is used as payment for vending and depositing machines
