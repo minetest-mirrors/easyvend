@@ -219,11 +219,11 @@ easyvend.set_formspec = function(pos, player)
 		local tt_i = ""
 		if minetest.registered_items[itemname] then
 			local desc_i = ItemStack(itemname):get_description()
-			tt_i = "tooltip[0,0.35;0.8,0.8;"..desc_i.."]"
+			tt_i = "tooltip[0,0.35;0.8,0.8;"..F(desc_i).."]"
 		end
 		formspec = formspec
 				.."item_image[0,1.65;1,1;"..easyvend.currency.."]"
-				.."tooltip[0,1.65;0.8,0.8;"..desc_c.."]"
+				.."tooltip[0,1.65;0.8,0.8;"..F(desc_c).."]"
 				.."item_image[0,0.35;1,1;"..itemname.."]"
 				..tt_i
 				.."label[1,1.85;×" .. cost .. "]"
