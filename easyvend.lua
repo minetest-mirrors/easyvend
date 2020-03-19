@@ -186,8 +186,10 @@ easyvend.set_formspec = function(pos, player)
 	if configmode then
 		local wear = "false"
 		if meta:get_int("wear") == 1 then wear = "true" end
+		local desc = ItemStack(easyvend.currency):get_description()
 		formspec = formspec
-				.."item_image_button[0,1.65;1,1;"..easyvend.currency..";easyvend.currency_image;]"
+				.."item_image[0,1.65;1,1;"..easyvend.currency.."]"
+				.."tooltip[0,1.65;0.8,0.8;"..F(desc).."]"
 				.."list[current_name;item;0,0.35;1,1;]"
 				.."listring[current_player;main]"
 				.."listring[current_name;item]"
@@ -213,11 +215,19 @@ easyvend.set_formspec = function(pos, player)
 			.."tooltip[wear;"..F(weartooltip).."]"
 		end
 	else
+		local desc_c = ItemStack(easyvend.currency):get_description()
+		local tt_i = ""
+		if minetest.registered_items[itemname] then
+			local desc_i = ItemStack(itemname):get_description()
+			tt_i = "tooltip[0,0.35;0.8,0.8;"..desc_i.."]"
+		end
 		formspec = formspec
-				.."item_image_button[0,1.65;1,1;"..easyvend.currency..";easyvend.currency_image;]"
-				.."item_image_button[0,0.35;1,1;"..itemname..";item_image;]"
-		.."label[1,1.85;×" .. cost .. "]"
-		.."label[1,0.55;×" .. number .. "]"
+				.."item_image[0,1.65;1,1;"..easyvend.currency.."]"
+				.."tooltip[0,1.65;0.8,0.8;"..desc_c.."]"
+				.."item_image[0,0.35;1,1;"..itemname.."]"
+				..tt_i
+				.."label[1,1.85;×" .. cost .. "]"
+				.."label[1,0.55;×" .. number .. "]"
 		.."button[6,2.8;2,0.5;config;"..F(S("Configure")).."]"
 		if buysell == "sell" then
 			formspec = formspec .. "tooltip[config;"..F(S("Configure offered items and price (only for owner)")).."]"
