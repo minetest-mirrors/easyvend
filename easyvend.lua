@@ -176,8 +176,8 @@ easyvend.set_formspec = function(pos, player)
 	.."label[3,-0.2;" .. F(description) .. "]"
 
 	.."image[7.5,0.2;0.5,1;" .. status_image .. "]"
-	.."textarea[2.8,0.2;5.1,2;;"..F(S("Status: @1", status)) .. ";]"
-	.."textarea[2.8,1.3;5.6,2;;"..F(S("Message: @1", message)) .. ";]"
+	.."textarea[2.8,0.2;5.1,1.45;;"..F(S("Status: @1", status)) .. ";]"
+	.."textarea[2.8,1.3;5.6,1.45;;"..F(S("Message: @1", message)) .. ";]"
 
 		.."label[0,-0.15;"..F(numbertext).."]"
 		.."label[0,1.2;"..F(costtext).."]"
@@ -251,7 +251,7 @@ easyvend.set_formspec = function(pos, player)
 				end
 			end
 			if weartext ~= nil then
-				formspec = formspec .."textarea[2.3,2.6;3,1;;"..F(weartext)..";]"
+				formspec = formspec .."textarea[2.3,2.6;4,1;;"..F(weartext)..";]"
 			end
 		end
 	end
